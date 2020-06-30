@@ -2,7 +2,7 @@ import React from "react";
 import classes from "./Burger.module.css";
 import BurgerIngredient from "./BurgerIngredient/BurgerIngredient";
 
-interface Ingredient {
+export interface Ingredient {
   salad: number;
   bacon: number;
   meat: number;
