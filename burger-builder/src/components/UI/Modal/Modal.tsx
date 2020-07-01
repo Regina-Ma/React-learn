@@ -5,15 +5,18 @@ import Backdrop from "../Backdrop/Backdrop";
 
 interface ModalProps {
   children: React.ReactNode;
-  show: boolean;
-  modalClosed: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  show: boolean | undefined;
+  modalClosed?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 interface ModalState {}
 
 class Modal extends Component<ModalProps, ModalState> {
   shouldComponentUpdate(nextProps: ModalProps, nextState: ModalState) {
-    return nextProps.show !== this.props.show;
+    return (
+      nextProps.show !== this.props.show ||
+      nextProps.children !== this.props.children
+    );
   }
 
   // componentWillUpdate() {
@@ -23,7 +26,10 @@ class Modal extends Component<ModalProps, ModalState> {
   render() {
     return (
       <Aux>
-        <Backdrop show={this.props.show} clicked={this.props.modalClosed} />
+        <Backdrop
+          show={this.props.show !== undefined ? this.props.show : false}
+          clicked={this.props.modalClosed ? this.props.modalClosed : undefined}
+        />
         <div
           className={classes.Modal}
           style={{
