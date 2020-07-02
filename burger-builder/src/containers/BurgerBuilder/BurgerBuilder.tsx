@@ -41,7 +41,7 @@ class BurgerBuilder extends Component<BurgBuildProps, BurgBuildState> {
   };
 
   componentDidMount() {
-    console.log(this.props);
+    console.log("BurgerBuilder", this.props);
     axios
       .get("https://burger-builder-c64cb.firebaseio.com/ingredients.json")
       .then((response) => {

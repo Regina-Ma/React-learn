@@ -1,15 +1,22 @@
 import React, { Component } from "react";
 import Order from "../../components/Order/Order";
 import axios from "../../axios-orders";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import { Ingredient } from "../BurgerBuilder/BurgerBuilder";
 
-interface OrdersState {
-  orders: [];
+interface OrderArray {
+  id: string;
+  ingredients: Ingredient;
+  price: string;
+}
+interface OrdersState extends OrderArray {
+  orders: OrderArray[];
   loading: boolean;
 }
 
-class Orders extends Component {
+class Orders extends Component<OrdersState> {
   state = {
-    orders: [],
+    orders: [] as OrderArray[],
     loading: true,
   };
 
@@ -17,8 +24,11 @@ class Orders extends Component {
     axios
       .get("/orders.json")
       .then((res) => {
-        console.log(res);
-        this.setState({ loading: false });
+        const fetchedOrders: OrderArray[] = [];
+        for (let key in res.data) {
+          fetchedOrders.push({ ...res.data[key], id: key });
+        }
+        this.setState({ loading: false, orders: fetchedOrders });
       })
       .catch((err) => {
         this.setState({ loading: false });
@@ -27,11 +37,17 @@ class Orders extends Component {
   render() {
     return (
       <div>
-        <Order />
-        <Order />
+        {this.state.orders.map((order: OrderArray) => {
+          console.log(order);
+          //   return (<Order
+          //     key={order.id}
+          //     ingredients={order.ingredients}
+          //     price={order.price}
+          //   />);
+        })}
       </div>
     );
   }
 }
 
-export default Orders;
+export default withErrorHandler(Orders, axios);
