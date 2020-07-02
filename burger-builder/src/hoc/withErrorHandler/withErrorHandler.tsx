@@ -3,17 +3,12 @@ import Modal from "../../components/UI/Modal/Modal";
 import Aux from "../Auxiliary/Auxiliary";
 import { AxiosInstance } from "axios";
 
-interface WEHProps {
-  children?: React.ReactNode;
-  className?: string;
-}
-
 interface WEHState {
   error: string;
 }
 
 const withErrorHandler = (WrappedComponent: Function, axios: AxiosInstance) => {
-  return class extends Component<WEHProps, WEHState> {
+  return class extends Component<{}, WEHState> {
     reqInterceptor!: number;
     resInterceptor!: number;
     state = {

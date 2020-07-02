@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { RouteComponentProps } from "react-router-dom";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
@@ -8,7 +9,7 @@ import axios from "../../axios-orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
-interface BurgBuildProps {}
+interface BurgBuildProps extends RouteComponentProps {}
 
 export interface Ingredient {
   [key: string]: number;
@@ -40,6 +41,7 @@ class BurgerBuilder extends Component<BurgBuildProps, BurgBuildState> {
   };
 
   componentDidMount() {
+    console.log(this.props);
     axios
       .get("https://burger-builder-c64cb.firebaseio.com/ingredients.json")
       .then((response) => {
@@ -102,29 +104,22 @@ class BurgerBuilder extends Component<BurgBuildProps, BurgBuildState> {
 
   purchaseContinueHandler = (): void => {
     // alert("You continue!");
-    this.setState({ loading: true });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: "Max",
-        address: {
-          street: "Gatve 1",
-          zipCode: "95000",
-          country: "Lithuania",
-        },
-        email: "test@test.com",
-      },
-      deliveryMethod: "fastest",
-    };
-    axios
-      .post("/orders.json", order)
-      .then((response) => {
-        this.setState({ loading: false, purchasing: false });
-      })
-      .catch((error) => {
-        this.setState({ loading: false, purchasing: false });
-      });
+    const queryParams: string[] = [];
+
+    for (let i in this.state.ingredients) {
+      queryParams.push(
+        encodeURIComponent(i) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[i])
+      );
+    }
+    queryParams.push("price=" + this.state.totalPrice);
+    const queryString = queryParams.join("&");
+
+    this.props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryString,
+    });
   };
 
   render() {

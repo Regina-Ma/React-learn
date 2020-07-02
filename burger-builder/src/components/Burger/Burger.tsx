@@ -1,12 +1,17 @@
 import React from "react";
 import classes from "./Burger.module.css";
 import BurgerIngredient from "./BurgerIngredient/BurgerIngredient";
+import { Ingredient } from "../../containers/BurgerBuilder/BurgerBuilder";
+// export interface BurgerProps extends RouteComponentProps {
+//   ingredients: { [key: string]: number };
+// }
 
 export interface BurgerProps {
-  ingredients: { [key: string]: number };
+  ingredients: Ingredient;
 }
 
-const Burger = (props: BurgerProps) => {
+const Burger = (props: BurgerProps): JSX.Element => {
+  console.log(props);
   let transformedIngredients: JSX.Element[];
   transformedIngredients = Object.keys(props.ingredients)
     .map((ingKey) => {
