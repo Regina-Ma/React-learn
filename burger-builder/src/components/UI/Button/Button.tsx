@@ -3,7 +3,7 @@ import classes from "./Button.module.css";
 
 interface ButtonProps {
   children: React.ReactNode;
-  clicked: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  clicked?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   btnType: string;
 }
 
