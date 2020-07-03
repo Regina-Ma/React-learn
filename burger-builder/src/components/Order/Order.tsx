@@ -9,15 +9,15 @@ interface OrderProps {
 }
 
 const Order = (props: OrderProps) => {
-  const ingredients = [];
+  const ingredientArray = [];
   for (let ingredientName in props.ingredients) {
-    ingredients.push({
+    ingredientArray.push({
       name: ingredientName,
       amount: props.ingredients[ingredientName],
     });
   }
 
-  const ingredientOutput = ingredients.map((ig) => {
+  const ingredientOutput = ingredientArray.map((ig) => {
     return (
       <span
         style={{

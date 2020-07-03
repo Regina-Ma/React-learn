@@ -5,51 +5,126 @@ import { Ingredient } from "../../BurgerBuilder/BurgerBuilder";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import classes from "./ContactData.module.css";
 import axios from "../../../axios-orders";
+import Input from "../../../components/UI/Input/Input";
 
 interface CDProps extends RouteComponentProps {
   ingredients: Ingredient;
   price: number;
 }
+export interface InputConfig {
+  // [key: string]: string;
+  type: string;
+  placeholder: string;
+}
+
+export interface Options {
+  value: string;
+  displayValue: string;
+}
+export interface SelectConfig {
+  // [key: string]: InputConfig[];
+  options: Options[];
+  // [key: string]: Array<InputConfig>;
+}
+// interface FormInputProps {
+//   elementType: string;
+//   elementConfig: InputConfig;
+//   value: string;
+// }
+
+// interface FormSelectProps {
+//   elementType: string;
+//   elementConfig: SelectConfig;
+//   value: string;
+// }
+
+interface FormItemProps {
+  elementType: string;
+  elementConfig: SelectConfig | InputConfig;
+  value: string;
+  // [key: string]: string | SelectConfig | InputConfig;
+}
+
+interface FormProps {
+  name: FormItemProps;
+  street: FormItemProps;
+  zipCode: FormItemProps;
+  country: FormItemProps;
+  email: FormItemProps;
+  deliveryMethod: FormItemProps;
+  // [key: string]: FormItemProps;
+}
 
 interface CDState {
-  name: string;
-  email: string;
-  address: {
-    street: string;
-    postCode: string;
-  };
+  orderForm: FormProps;
   loading: boolean;
 }
 
 class ContactData extends Component<CDProps, CDState> {
   state = {
-    name: "",
-    email: "",
-    address: {
-      street: "",
-      postCode: "",
+    orderForm: {
+      name: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Your name",
+        },
+        value: "",
+      } as FormItemProps,
+      street: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Street",
+        },
+        value: "",
+      } as FormItemProps,
+      zipCode: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Postal Code",
+        },
+        value: "",
+      } as FormItemProps,
+      country: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Country",
+        },
+        value: "",
+      } as FormItemProps,
+      email: {
+        elementType: "input",
+        elementConfig: {
+          type: "email",
+          placeholder: "Your email",
+        },
+        value: "",
+      } as FormItemProps,
+      deliveryMethod: {
+        elementType: "select",
+        elementConfig: {
+          options: [
+            { value: "fastest", displayValue: "Fastest" },
+            { value: "cheapest", displayValue: "Cheapest" },
+          ],
+        },
+        value: "",
+      } as FormItemProps,
     },
     ingredients: {} as Ingredient,
     loading: false,
     price: 0,
   };
 
-  orderHandler = (event: any) => {
+  orderHandler = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     this.setState({ loading: true });
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.price,
-      customer: {
-        name: "Max",
-        address: {
-          street: "Gatve 1",
-          zipCode: "95000",
-          country: "Lithuania",
-        },
-        email: "test@test.com",
-      },
-      deliveryMethod: "fastest",
     };
     axios
       .post("/orders.json", order)
@@ -63,12 +138,40 @@ class ContactData extends Component<CDProps, CDState> {
   };
 
   render() {
+    const formElementsArray = [];
+    // let key: Extract<keyof FormItemProps, string>;
+    // declare let _foo: Foo;
+    // let bar: typeof _foo.foo;
+
+    // declare key _[key]: FormItemProps;
+
+    const names = {
+      name: {} as FormItemProps,
+      street: {} as FormItemProps,
+      zipCode: {} as FormItemProps,
+      email: {} as FormItemProps,
+      country: {} as FormItemProps,
+      deliveryMethod: {} as FormItemProps,
+    };
+    type Names = keyof typeof names;
+    let key: Names;
+
+    for (key in this.state.orderForm) {
+      formElementsArray.push({
+        id: key,
+        configObject: this.state.orderForm[key],
+      });
+    }
     let form = (
       <form action="">
-        <input type="text" name="name" placeholder="Your Name" />
-        <input type="email" name="email" placeholder="Your Email" />
-        <input type="text" name="street" placeholder="Street" />
-        <input type="text" name="postCode" placeholder="Post Code" />
+        {formElementsArray.map((formElement) => (
+          <Input
+            key={formElement.id}
+            elementType={formElement.configObject.elementType}
+            elementConfig={formElement.configObject.elementConfig}
+            value={formElement.configObject.value}
+          />
+        ))}
         <Button btnType="Success" clicked={this.orderHandler}>
           ORDER
         </Button>

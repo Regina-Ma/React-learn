@@ -39,11 +39,13 @@ class Orders extends Component<OrdersState> {
       <div>
         {this.state.orders.map((order: OrderArray) => {
           console.log(order);
-          //   return (<Order
-          //     key={order.id}
-          //     ingredients={order.ingredients}
-          //     price={order.price}
-          //   />);
+          return (
+            <Order
+              key={order.id}
+              ingredients={order.ingredients}
+              price={order.price}
+            />
+          );
         })}
       </div>
     );
