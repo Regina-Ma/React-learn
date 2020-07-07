@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { connect } from "react-redux";
+
 import Button from "../../../components/UI/Button/Button";
 import { Ingredient } from "../../BurgerBuilder/BurgerBuilder";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import classes from "./ContactData.module.css";
 import axios from "../../../axios-orders";
 import Input from "../../../components/UI/Input/Input";
+import { InitialState } from "../../../store/reducers/burgerBuilder";
 
 interface CDProps extends RouteComponentProps {
-  ingredients: Ingredient;
+  ings: Ingredient;
   price: number;
 }
 export interface InputConfig {
@@ -157,7 +160,6 @@ class ContactData extends Component<CDProps, CDState> {
         touched: false,
       } as FormItemProps,
     },
-    ingredients: {} as Ingredient,
     loading: false,
     formIsValid: false,
     price: 0,
@@ -184,7 +186,7 @@ class ContactData extends Component<CDProps, CDState> {
     }
 
     const order = {
-      ingredients: this.props.ingredients,
+      ingredients: this.props.ings,
       price: this.props.price,
       orderData: formData,
     };
@@ -245,12 +247,6 @@ class ContactData extends Component<CDProps, CDState> {
 
   render() {
     const formElementsArray = [];
-    // let key: Extract<keyof FormItemProps, string>;
-    // declare let _foo: Foo;
-    // let bar: typeof _foo.foo;
-
-    // declare key _[key]: FormItemProps;
-
     const names = {
       name: {} as FormItemProps,
       street: {} as FormItemProps,
@@ -301,4 +297,11 @@ class ContactData extends Component<CDProps, CDState> {
   }
 }
 
-export default ContactData;
+const mapStateToProps = (state: InitialState) => {
+  return {
+    ings: state.ingredients,
+    price: state.totalPrice,
+  };
+};
+
+export default connect(mapStateToProps)(ContactData);
