@@ -21,12 +21,13 @@ interface InputProps {
   changed: React.ChangeEventHandler;
   invalid: boolean;
   shouldValidate: boolean;
+  touched: boolean;
 }
 const Input = (props: InputProps) => {
   let inputElement: JSX.Element;
 
   const inputClasses = [classes.inputElement];
-  if (props.invalid && props.shouldValidate) {
+  if (props.invalid && props.shouldValidate && props.touched) {
     inputClasses.push(classes.Invalid);
   }
 

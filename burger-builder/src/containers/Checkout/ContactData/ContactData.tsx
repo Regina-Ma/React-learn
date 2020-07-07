@@ -43,14 +43,15 @@ interface FormItemProps {
   elementType: string;
   elementConfig: InputConfig;
   value: string;
-  validation?: Validation;
+  validation: Validation;
   valid: boolean;
+  touched: boolean;
   // [key: string]: string | SelectConfig | InputConfig;
 }
 
 interface Validation {
-  required: boolean;
-  minLength: number;
+  required?: boolean;
+  minLength?: number;
 }
 
 interface FormProps {
@@ -66,6 +67,7 @@ interface FormProps {
 interface CDState {
   orderForm: FormProps;
   loading: boolean;
+  formIsValid: boolean;
 }
 
 class ContactData extends Component<CDProps, CDState> {
@@ -83,6 +85,7 @@ class ContactData extends Component<CDProps, CDState> {
           minLength: 2,
         },
         valid: false,
+        touched: false,
       } as FormItemProps,
       street: {
         elementType: "input",
@@ -96,6 +99,7 @@ class ContactData extends Component<CDProps, CDState> {
           minLength: 5,
         },
         valid: false,
+        touched: false,
       } as FormItemProps,
       zipCode: {
         elementType: "input",
@@ -109,6 +113,7 @@ class ContactData extends Component<CDProps, CDState> {
           minLength: 4,
         },
         valid: false,
+        touched: false,
       } as FormItemProps,
       country: {
         elementType: "input",
@@ -122,6 +127,7 @@ class ContactData extends Component<CDProps, CDState> {
           minLength: 3,
         },
         valid: false,
+        touched: false,
       } as FormItemProps,
       email: {
         elementType: "input",
@@ -135,6 +141,7 @@ class ContactData extends Component<CDProps, CDState> {
           minLength: 5,
         },
         valid: false,
+        touched: false,
       } as FormItemProps,
       deliveryMethod: {
         elementType: "select",
@@ -144,12 +151,15 @@ class ContactData extends Component<CDProps, CDState> {
             { value: "cheapest", displayValue: "Cheapest" },
           ],
         },
-        value: "",
-        valid: false,
+        value: "cheapest",
+        validation: {} as Validation,
+        valid: true,
+        touched: false,
       } as FormItemProps,
     },
     ingredients: {} as Ingredient,
     loading: false,
+    formIsValid: false,
     price: 0,
   };
 
@@ -191,10 +201,15 @@ class ContactData extends Component<CDProps, CDState> {
 
   checkValidity(value: string, rules: Validation | undefined) {
     let isValid = true;
+    if (!rules) {
+      return true;
+    }
+
     if (rules) {
       if (rules.required) {
         isValid = value.trim() !== "" && isValid;
       }
+
       if (rules.minLength) {
         isValid = value.length >= 2 && isValid;
       }
@@ -217,9 +232,15 @@ class ContactData extends Component<CDProps, CDState> {
       updatedFormelement.value,
       updatedFormelement.validation
     );
+    updatedFormelement.touched = true;
     updatedOrderForm[inputIdentifier as keyof FormProps] = updatedFormelement;
-    console.log(updatedFormelement);
-    this.setState({ orderForm: updatedOrderForm });
+    let isValid = true;
+    for (let inputIdentifier in updatedOrderForm) {
+      isValid =
+        updatedOrderForm[inputIdentifier as keyof FormProps].valid && isValid;
+    }
+    console.log(isValid);
+    this.setState({ orderForm: updatedOrderForm, formIsValid: isValid });
   };
 
   render() {
@@ -257,12 +278,15 @@ class ContactData extends Component<CDProps, CDState> {
             value={formElement.configObject.value}
             invalid={!formElement.configObject.valid}
             shouldValidate={formElement.configObject.validation ? true : false}
+            touched={formElement.configObject.touched}
             changed={(event: React.ChangeEvent<HTMLFormElement>) =>
               this.inputChangedHandler(event, formElement.id)
             }
           />
         ))}
-        <Button btnType="Success">ORDER</Button>
+        <Button btnType="Success" disabled={!this.state.formIsValid}>
+          ORDER
+        </Button>
       </form>
     );
     if (this.state.loading) {
