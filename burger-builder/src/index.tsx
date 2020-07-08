@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, combineReducers } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 
@@ -10,9 +10,23 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import burgerBuilderReducer from "./store/reducers/burgerBuilder";
+import orderReducer from "./store/reducers/order";
+import { OrderReducerState } from "./store/reducers/order";
+import { BBReducerState } from "./store/reducers/burgerBuilder";
+
+const rootReducer = combineReducers({
+  burgerBuilder: burgerBuilderReducer,
+  order: orderReducer,
+});
+
+// export type RootState = ReturnType<typeof rootReducer>;
+export interface RootState {
+  burgerBuilder: BBReducerState;
+  order: OrderReducerState;
+}
 
 const store = createStore(
-  burgerBuilderReducer,
+  rootReducer,
   composeWithDevTools(
     applyMiddleware(thunk)
     // other store enhancers if any

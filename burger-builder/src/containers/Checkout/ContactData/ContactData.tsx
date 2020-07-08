@@ -1,18 +1,23 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import axios from "../../../axios-orders";
 
 import Button from "../../../components/UI/Button/Button";
 import { Ingredient } from "../../BurgerBuilder/BurgerBuilder";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import classes from "./ContactData.module.css";
-import axios from "../../../axios-orders";
 import Input from "../../../components/UI/Input/Input";
-import { InitialState } from "../../../store/reducers/burgerBuilder";
+import { RootState } from "../../../index";
+import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
+import { purchaseBurger } from "../../../store/actions/index";
 
 interface CDProps extends RouteComponentProps {
   ings: Ingredient;
   price: number;
+  onOrderBurger: Function;
+  loading: boolean;
 }
 export interface InputConfig {
   type: string;
@@ -24,23 +29,11 @@ export interface Options {
   value: string;
   displayValue: string;
 }
-// export interface SelectConfig {
-// [key: string]: InputConfig[];
-// options: Options[];
-// [key: string]: Array<InputConfig>;
-// }
-
-// interface FormInputProps {
-//   elementType: string;
-//   elementConfig: InputConfig;
-//   value: string;
-// }
-
-// interface FormSelectProps {
-//   elementType: string;
-//   elementConfig: SelectConfig;
-//   value: string;
-// }
+export interface OrderDataProps {
+  ingredients: Ingredient;
+  price: number;
+  orderData: { [element: string]: string };
+}
 
 interface FormItemProps {
   elementType: string;
@@ -69,7 +62,6 @@ interface FormProps {
 
 interface CDState {
   orderForm: FormProps;
-  loading: boolean;
   formIsValid: boolean;
 }
 
@@ -160,14 +152,12 @@ class ContactData extends Component<CDProps, CDState> {
         touched: false,
       } as FormItemProps,
     },
-    loading: false,
     formIsValid: false,
     price: 0,
   };
 
   orderHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    this.setState({ loading: true });
 
     const names = {
       name: {} as FormItemProps,
@@ -185,20 +175,13 @@ class ContactData extends Component<CDProps, CDState> {
       formData[key] = this.state.orderForm[key].value;
     }
 
-    const order = {
+    const order: OrderDataProps = {
       ingredients: this.props.ings,
       price: this.props.price,
       orderData: formData,
     };
-    axios
-      .post("/orders.json", order)
-      .then((response) => {
-        this.setState({ loading: false });
-        this.props.history.push("/");
-      })
-      .catch((error) => {
-        this.setState({ loading: false });
-      });
+
+    this.props.onOrderBurger(order);
   };
 
   checkValidity(value: string, rules: Validation | undefined) {
@@ -285,7 +268,7 @@ class ContactData extends Component<CDProps, CDState> {
         </Button>
       </form>
     );
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
     return (
@@ -297,11 +280,22 @@ class ContactData extends Component<CDProps, CDState> {
   }
 }
 
-const mapStateToProps = (state: InitialState) => {
+const mapStateToProps = (state: RootState) => {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice,
+    ings: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    loading: state.order.loading,
   };
 };
 
-export default connect(mapStateToProps)(ContactData);
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    onOrderBurger: (orderData: OrderDataProps) =>
+      dispatch({ type: purchaseBurger(orderData) }),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(ContactData, axios));

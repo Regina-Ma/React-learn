@@ -1,12 +1,8 @@
-// import {
-//   ActionTypes,
-//   ADD_INGREDIENT,
-//   REMOVE_INGREDIENT,
-// } from "../actions/actionTypes";
-import * as actionTypes from "../actions/actionTypes";
+import { EnumActionTypes, UnionActions } from "../actions/actionTypes";
 import { Ingredient } from "../../containers/BurgerBuilder/BurgerBuilder";
+import { updateObject } from "../utility";
 
-export interface InitialState {
+export interface BBReducerState {
   ingredients: Ingredient;
   totalPrice: number;
   error: boolean;
@@ -25,26 +21,44 @@ const INGREDIENT_PRICES: Ingredient = {
   bacon: 0.7,
 };
 
-const reducer = (state = initialState, action: actionTypes.ActionTypes) => {
+const reducer = (
+  state: BBReducerState = initialState,
+  action: UnionActions
+) => {
   switch (action.type) {
-    case actionTypes.ADD_INGREDIENT:
-      return {
-        ...state,
-        ingredients: {
-          ...state.ingredients,
-          [action.ingredientName]: state.ingredients[action.ingredientName] + 1,
-        },
+    case EnumActionTypes.ADD_INGREDIENT:
+      const updatedIngredient = {
+        [action.ingredientName]: state.ingredients[action.ingredientName] + 1,
+      };
+      const updatedIngredients = updateObject(
+        state.ingredients,
+        updatedIngredient
+      );
+      const updatedState = {
+        ingredients: updatedIngredients,
         totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
       };
-    case actionTypes.REMOVE_INGREDIENT:
-      return {
-        ...state,
-        ingredients: {
-          ...state.ingredients,
-          [action.ingredientName]: state.ingredients[action.ingredientName] - 1,
-        },
-        totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+      return updateObject(state, updatedState);
+    case EnumActionTypes.REMOVE_INGREDIENT:
+      const updatedIng = {
+        [action.ingredientName]: state.ingredients[action.ingredientName] - 1,
       };
+      const updatedIngs = updateObject(state.ingredients, updatedIng);
+      const updatedSt = {
+        ingredients: updatedIngs,
+        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+      };
+      return updateObject(state, updatedSt);
+    case EnumActionTypes.SET_INGREDIENTS:
+      return updateObject(state, {
+        ingredients: action.ingredients,
+        totalPrice: 4,
+        error: false,
+      });
+    case EnumActionTypes.FETCH_INGREDIENTS_FAILED:
+      return updateObject(state, {
+        error: true,
+      });
     default:
       return state;
   }

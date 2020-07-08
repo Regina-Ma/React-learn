@@ -1,45 +1,56 @@
 import { Dispatch } from "redux";
 import axios from "../../axios-orders";
 
-import * as actionTypes from "./actionTypes";
+// import * as actionTypes from "./actionTypes";
+import {
+  EnumActionTypes,
+  AddIngredientAction,
+  RemoveIngredientAction,
+  SetIngredientsAction,
+  FetchIngredientsFailedAction,
+} from "./actionTypes";
 import { Ingredient } from "../../containers/BurgerBuilder/BurgerBuilder";
 
-export const addIngredient = (name: string) => {
+export const addIngredient = (name: string): AddIngredientAction => {
   return {
-    type: actionTypes.ADD_INGREDIENT,
+    type: EnumActionTypes.ADD_INGREDIENT,
     ingredientName: name,
   };
 };
 
-export const removeIngredient = (name: string) => {
+export const removeIngredient = (name: string): RemoveIngredientAction => {
   return {
-    type: actionTypes.REMOVE_INGREDIENT,
+    type: EnumActionTypes.REMOVE_INGREDIENT,
     ingredientName: name,
   };
 };
 
-export const setIngredients = (ingredients: Ingredient) => {
+const setIngredients = (ingredients: Ingredient): SetIngredientsAction => {
   return {
-    type: actionTypes.SET_INGREDIENTS,
+    type: EnumActionTypes.SET_INGREDIENTS,
     ingredients: ingredients,
+    // error: error ? true : false,
   };
 };
 
-export const fetchIngredientsFailed = () => {
+const fetchIngredientsFailed = (error: Error): FetchIngredientsFailedAction => {
   return {
-    type: actionTypes.FETCH_INGREDIENTS_FAILED,
+    type: EnumActionTypes.FETCH_INGREDIENTS_FAILED,
+    error: error ? true : false,
   };
 };
 
 export const initIngredients = () => {
   return (dispatch: Dispatch) => {
     axios
-      .get("https://burger-builder-c64cb.firebaseio.com/ingredients.json")
+      .get<Ingredient>(
+        "https://burger-builder-c64cb.firebaseio.com/ingredients.json"
+      )
       .then((response) => {
-        dispatch(setIngredients(response.data));
+        dispatch<SetIngredientsAction>(setIngredients(response.data));
       })
       .catch((error: Error) => {
-        dispatch(fetchIngredientsFailed());
+        dispatch<FetchIngredientsFailedAction>(fetchIngredientsFailed(error));
       });
   };
 };
