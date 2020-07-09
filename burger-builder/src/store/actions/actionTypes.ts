@@ -2,11 +2,6 @@ import { Ingredient } from "../../containers/BurgerBuilder/BurgerBuilder";
 import { OrderDataProps } from "../../containers/Checkout/ContactData/ContactData";
 import { OrderArray } from "../../containers/Orders/Orders";
 
-// export const ADD_INGREDIENT = "ADD_INGREDIENT";
-// export const REMOVE_INGREDIENT = "REMOVE_INGREDIENT";
-// export const SET_INGREDIENTS = "SET_INGREDIENTS";
-// export const FETCH_INGREDIENTS_FAILED = "FETCH_INGREDIENTS_FAILED";
-
 export enum EnumActionTypes {
   ADD_INGREDIENT,
   REMOVE_INGREDIENT,
@@ -21,7 +16,13 @@ export enum EnumActionTypes {
   FETCH_ORDERS_START,
   FETCH_ORDERS_SUCCESS,
   FETCH_ORDERS_FAIL,
+
+  AUTH_START = "AUTH_START",
+  AUTH_SUCCESS = "AUTH_SUCCESS",
+  AUTH_FAIL = "AUTH_FAIL",
 }
+
+// --------------------INGREDIENTS---------------------------
 
 export interface AddIngredientAction {
   type: EnumActionTypes.ADD_INGREDIENT;
@@ -45,6 +46,8 @@ export interface FetchIngredientsFailedAction {
   error: boolean;
 }
 
+// --------------------PURCHASE---------------------------
+
 export interface PurchaseBurgerSuccessAction {
   type: EnumActionTypes.PURCHASE_BURGER_SUCCESS;
   orderId: string;
@@ -64,6 +67,8 @@ export interface PurchaseInitAction {
   type: EnumActionTypes.PURCHASE_INIT;
 }
 
+// --------------------ORDERS---------------------------
+
 export interface FetchOrdersSuccessAction {
   type: EnumActionTypes.FETCH_ORDERS_SUCCESS;
   orders: OrderArray[];
@@ -78,6 +83,28 @@ export interface FetchOrdersStartAction {
   type: EnumActionTypes.FETCH_ORDERS_START;
 }
 
+// --------------------AUTHENTICATION---------------------------
+
+export interface AuthStartAction {
+  type: EnumActionTypes.AUTH_START;
+}
+
+export interface DataProps {
+  email: string;
+  password: string;
+  returnSecureToken: boolean;
+}
+export interface AuthSuccessAction {
+  type: EnumActionTypes.AUTH_SUCCESS;
+  idToken: string;
+  userId: string;
+}
+
+export interface AuthFailAction {
+  type: EnumActionTypes.AUTH_FAIL;
+  error: string;
+}
+
 export type UnionActions =
   | AddIngredientAction
   | RemoveIngredientAction
@@ -89,4 +116,7 @@ export type UnionActions =
   | PurchaseInitAction
   | FetchOrdersSuccessAction
   | FetchOrdersFailAction
-  | FetchOrdersStartAction;
+  | FetchOrdersStartAction
+  | AuthStartAction
+  | AuthSuccessAction
+  | AuthFailAction;

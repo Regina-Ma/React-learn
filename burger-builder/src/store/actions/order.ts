@@ -1,3 +1,4 @@
+import { Dispatch } from "redux";
 import {
   EnumActionTypes,
   PurchaseBurgerSuccessAction,
@@ -8,7 +9,6 @@ import {
   FetchOrdersFailAction,
   FetchOrdersStartAction,
 } from "./actionTypes";
-import { Dispatch } from "redux";
 import axios from "../../axios-orders";
 import { OrderDataProps } from "../../containers/Checkout/ContactData/ContactData";
 import { OrderArray } from "../../containers/Orders/Orders";
@@ -47,8 +47,8 @@ export const purchaseBurger = (orderData: OrderDataProps) => {
           purchaseBurgerSuccess(response.data.name, orderData)
         );
       })
-      .catch((error) => {
-        dispatch<PurchaseBurgerFailAction>(purchaseBurgerFail(error));
+      .catch((error: Error) => {
+        dispatch<PurchaseBurgerFailAction>(purchaseBurgerFail(error.message));
       });
   };
 };

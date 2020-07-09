@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Route, Redirect, RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import { Ingredient } from "../BurgerBuilder/BurgerBuilder";

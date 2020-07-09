@@ -11,18 +11,22 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import burgerBuilderReducer from "./store/reducers/burgerBuilder";
 import orderReducer from "./store/reducers/order";
+import authReducer from "./store/reducers/auth";
 import { OrderReducerState } from "./store/reducers/order";
 import { BBReducerState } from "./store/reducers/burgerBuilder";
+import { AuthReducerState } from "./store/reducers/auth";
 
 const rootReducer = combineReducers({
   burgerBuilder: burgerBuilderReducer,
   order: orderReducer,
+  auth: authReducer,
 });
 
 // export type RootState = ReturnType<typeof rootReducer>;
 export interface RootState {
   burgerBuilder: BBReducerState;
   order: OrderReducerState;
+  auth: AuthReducerState;
 }
 
 const store = createStore(

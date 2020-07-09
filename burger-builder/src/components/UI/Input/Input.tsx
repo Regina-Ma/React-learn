@@ -1,19 +1,7 @@
 import React, { ChangeEventHandler } from "react";
 import classes from "./Input.module.css";
+import { InputConfig } from "../../../containers/Checkout/ContactData/ContactData";
 
-interface InputConfig {
-  type: string;
-  placeholder: string;
-  options: Options[];
-}
-
-interface Options {
-  value: string;
-  displayValue: string;
-}
-// interface SelectConfig {
-//   options: Options[];
-// }
 interface InputProps {
   elementType: string;
   value: string;
@@ -60,7 +48,7 @@ const Input = (props: InputProps) => {
           value={props.value}
           onChange={props.changed}
         >
-          {props.elementConfig.options.map((option) => (
+          {props.elementConfig.options!.map((option) => (
             <option key={option.value} value={option.value}>
               {option.displayValue}
             </option>

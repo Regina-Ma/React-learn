@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
-import { Dispatch, AnyAction } from "redux";
+import { Dispatch } from "redux";
 import axios from "../../../axios-orders";
 
 import Button from "../../../components/UI/Button/Button";
@@ -22,7 +22,7 @@ interface CDProps extends RouteComponentProps {
 export interface InputConfig {
   type: string;
   placeholder: string;
-  options: Options[];
+  options?: Options[];
 }
 
 export interface Options {
@@ -35,7 +35,7 @@ export interface OrderDataProps {
   orderData: { [element: string]: string };
 }
 
-interface FormItemProps {
+export interface FormItemProps {
   elementType: string;
   elementConfig: InputConfig;
   value: string;
@@ -45,7 +45,7 @@ interface FormItemProps {
   // [key: string]: string | SelectConfig | InputConfig;
 }
 
-interface Validation {
+export interface Validation {
   required?: boolean;
   minLength?: number;
 }
