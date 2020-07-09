@@ -170,7 +170,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch<actionTypes.AddIngredientAction>(addIngredient(ingName)),
     onIngredientRemoved: (ingName: string) =>
       dispatch<actionTypes.RemoveIngredientAction>(removeIngredient(ingName)),
-    onInitIngredients: () => dispatch({ type: initIngredients() }),
+    onInitIngredients: () => dispatch<any>(initIngredients()),
     onInitPurchase: () =>
       dispatch<actionTypes.PurchaseInitAction>(purchaseInit()),
   };

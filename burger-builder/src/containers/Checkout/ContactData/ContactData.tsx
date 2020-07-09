@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { Dispatch, AnyAction } from "redux";
 import axios from "../../../axios-orders";
 
 import Button from "../../../components/UI/Button/Button";
@@ -291,7 +291,7 @@ const mapStateToProps = (state: RootState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onOrderBurger: (orderData: OrderDataProps) =>
-      dispatch({ type: purchaseBurger(orderData) }),
+      dispatch<any>(purchaseBurger(orderData)),
   };
 };
 

@@ -59,7 +59,9 @@ export const purchaseInit = (): PurchaseInitAction => {
   };
 };
 
-export const fetchOrdersSuccess = (orders: any): FetchOrdersSuccessAction => {
+export const fetchOrdersSuccess = (
+  orders: OrderArray[]
+): FetchOrdersSuccessAction => {
   return {
     type: EnumActionTypes.FETCH_ORDERS_SUCCESS,
     orders: orders,

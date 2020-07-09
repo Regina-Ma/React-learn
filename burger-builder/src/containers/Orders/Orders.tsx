@@ -52,7 +52,7 @@ const mapStateToProps = (state: RootState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onFetchOrders: () => dispatch({ type: fetchOrders() }),
+    onFetchOrders: () => dispatch<any>(fetchOrders()),
   };
 };
 

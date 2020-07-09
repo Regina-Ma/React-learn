@@ -1,4 +1,14 @@
-import { EnumActionTypes, UnionActions } from "../actions/actionTypes";
+import {
+  EnumActionTypes,
+  UnionActions,
+  PurchaseInitAction,
+  PurchaseBurgerStartAction,
+  PurchaseBurgerSuccessAction,
+  PurchaseBurgerFailAction,
+  FetchOrdersStartAction,
+  FetchOrdersSuccessAction,
+  FetchOrdersFailAction,
+} from "../actions/actionTypes";
 import { Ingredient } from "../../containers/BurgerBuilder/BurgerBuilder";
 import { updateObject } from "../utility";
 
@@ -21,56 +31,101 @@ const initialState = {
   purchased: false,
 };
 
+const purchaseInit = (state: OrderReducerState, action: PurchaseInitAction) => {
+  return updateObject(state, {
+    purchased: false,
+  });
+};
+
+const purchaseBurgerStart = (
+  state: OrderReducerState,
+  action: PurchaseBurgerStartAction
+) => {
+  return updateObject(state, {
+    loading: true,
+  });
+};
+
+const purchaseBurgerSuccess = (
+  state: OrderReducerState,
+  action: PurchaseBurgerSuccessAction
+) => {
+  // let newOrder = updateObject(action.orderData, {
+  //   id: action.orderId,
+  // });
+  // return updateObject(state, {
+  //   loading: false,
+  //   purchased: true,
+  //   orders: state.orders.concat(newOrder),
+  // });
+  const newOrder = {
+    ...action.orderData,
+    id: action.orderId,
+    purchased: true,
+  };
+  return {
+    ...state,
+    loading: false,
+    orders: state.orders.concat(newOrder),
+  };
+};
+
+const purchaseBurgerFail = (
+  state: OrderReducerState,
+  action: PurchaseBurgerFailAction
+) => {
+  return updateObject(state, {
+    loading: false,
+  });
+};
+
+const fetchOrderStart = (
+  state: OrderReducerState,
+  action: FetchOrdersStartAction
+) => {
+  return updateObject(state, {
+    loading: false,
+  });
+};
+
+const fetchOrdersSuccess = (
+  state: OrderReducerState,
+  action: FetchOrdersSuccessAction
+) => {
+  return updateObject(state, {
+    orders: action.orders,
+    loading: false,
+  });
+};
+
+const fetchOrdersFail = (
+  state: OrderReducerState,
+  action: FetchOrdersFailAction
+) => {
+  return updateObject(state, {
+    loading: false,
+  });
+};
+
 const reducer = (
   state: OrderReducerState = initialState,
   action: UnionActions
 ) => {
   switch (action.type) {
     case EnumActionTypes.PURCHASE_INIT:
-      return updateObject(state, {
-        purchased: false,
-      });
+      return purchaseInit(state, action);
     case EnumActionTypes.PURCHASE_BURGER_START:
-      return updateObject(state, {
-        loading: true,
-      });
+      return purchaseBurgerStart(state, action);
     case EnumActionTypes.PURCHASE_BURGER_SUCCESS:
-      // let newOrder = updateObject(action.orderData, {
-      //   id: action.orderId,
-      // });
-      // return updateObject(state, {
-      //   loading: false,
-      //   purchased: true,
-      //   orders: state.orders.concat(newOrder),
-      // });
-      const newOrder = {
-        ...action.orderData,
-        id: action.orderId,
-        purchased: true,
-      };
-      return {
-        ...state,
-        loading: false,
-        orders: state.orders.concat(newOrder),
-      };
+      return purchaseBurgerSuccess(state, action);
     case EnumActionTypes.PURCHASE_BURGER_FAIL:
-      return updateObject(state, {
-        loading: false,
-      });
+      return purchaseBurgerFail(state, action);
     case EnumActionTypes.FETCH_ORDERS_START:
-      return updateObject(state, {
-        loading: false,
-      });
+      return fetchOrderStart(state, action);
     case EnumActionTypes.FETCH_ORDERS_SUCCESS:
-      return updateObject(state, {
-        orders: action.orders,
-        loading: false,
-      });
-
+      return fetchOrdersSuccess(state, action);
     case EnumActionTypes.FETCH_ORDERS_FAIL:
-      return updateObject(state, {
-        loading: false,
-      });
+      return fetchOrdersFail(state, action);
     default:
       return state;
   }
