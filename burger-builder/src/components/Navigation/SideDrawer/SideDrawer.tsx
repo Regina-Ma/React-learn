@@ -8,6 +8,7 @@ import Aux from "../../../hoc/Auxiliary/Auxiliary";
 interface SideDrawerProps {
   closed: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   open: boolean;
+  isAuth: boolean;
 }
 
 const SideDrawer = (props: SideDrawerProps) => {
@@ -23,7 +24,7 @@ const SideDrawer = (props: SideDrawerProps) => {
           <Logo />
         </div>
         <nav>
-          <NavigationItems />
+          <NavigationItems isAuthenticated={props.isAuth} />
         </nav>
       </div>
     </Aux>

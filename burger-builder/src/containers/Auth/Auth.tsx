@@ -1,5 +1,6 @@
 import React, { Component, ChangeEvent } from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 import { Dispatch } from "redux";
 
 import Input from "../../components/UI/Input/Input";
@@ -9,7 +10,10 @@ import {
   Validation,
 } from "../../containers/Checkout/ContactData/ContactData";
 import classes from "./Auth.module.css";
-import { auth } from "../../store/actions/index";
+import { auth, setAuthRedirectPath } from "../../store/actions/index";
+import { SetAuthRedirectPathAction } from "../../store/actions/actionTypes";
+import Spinner from "../../components/UI/Spinner/Spinner";
+import { RootState } from "../../index";
 
 interface ControlProps {
   //   [key: string]: FormItemProps;
@@ -24,6 +28,12 @@ interface AuthState {
 
 interface AuthProps {
   onAuth: Function;
+  onSetRedirectPath: Function;
+  loading: boolean;
+  error?: string;
+  isAuthenticated: boolean;
+  buildingBurger: boolean;
+  authRedirectPath: string;
 }
 
 class Auth extends Component<AuthProps, AuthState> {
@@ -61,6 +71,12 @@ class Auth extends Component<AuthProps, AuthState> {
     },
     isSignup: true,
   };
+
+  componentDidMount() {
+    if (!this.props.buildingBurger && this.props.authRedirectPath !== "/") {
+      this.props.onSetRedirectPath();
+    }
+  }
 
   checkValidity(value: string, rules: Validation | undefined) {
     let isValid = true;
@@ -130,7 +146,7 @@ class Auth extends Component<AuthProps, AuthState> {
       });
     }
 
-    const form = formElementsArray.map((formElement) => (
+    let form = formElementsArray.map((formElement) => (
       <Input
         key={formElement.id}
         elementType={formElement.configObject.elementType}
@@ -144,8 +160,24 @@ class Auth extends Component<AuthProps, AuthState> {
         }
       />
     ));
+
+    if (this.props.loading) {
+      form = [<Spinner key="zero" />];
+    }
+
+    let errorMessage: JSX.Element | undefined;
+    if (this.props.error) {
+      errorMessage = <p>{this.props.error}</p>;
+    }
+    let authRedirect: JSX.Element | undefined;
+    if (this.props.isAuthenticated) {
+      authRedirect = <Redirect to={this.props.authRedirectPath} />;
+    }
+
     return (
       <div className={classes.Auth}>
+        {authRedirect}
+        {errorMessage}
         <form onSubmit={this.submitHandler}>
           {form}
           <Button btnType="Success">SUBMIT</Button>
@@ -158,12 +190,24 @@ class Auth extends Component<AuthProps, AuthState> {
   }
 }
 
+const mapStateToProps = (state: RootState) => {
+  return {
+    loading: state.auth.loading,
+    error: state.auth.error,
+    isAuthenticated: state.auth.token !== "",
+    buildingBurger: state.burgerBuilder.building,
+    authRedirectPath: state.auth.authRedirectPath,
+  };
+};
+
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onAuth: (email: string, password: string, isSignup: boolean) =>
       dispatch<any>(auth(email, password, isSignup)),
+    onSetRedirectPath: () =>
+      dispatch<SetAuthRedirectPathAction>(setAuthRedirectPath("/")),
   };
 };
 
 // export default Auth;
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

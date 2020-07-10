@@ -17,6 +17,7 @@ import {
   removeIngredient,
   initIngredients,
   purchaseInit,
+  setAuthRedirectPath,
 } from "../../store/actions/index";
 import { RootState } from "../../index";
 
@@ -24,10 +25,12 @@ interface BurgBuildProps extends RouteComponentProps {
   ings: Ingredient;
   price: number;
   error: boolean;
+  isAuthenticated: boolean;
   onIngredientAdded: Function;
   onIngredientRemoved: Function;
   onInitIngredients: Function;
   onInitPurchase: Function;
+  onSetRedirectPath: Function;
 }
 
 export interface Ingredient {
@@ -59,39 +62,13 @@ class BurgerBuilder extends Component<BurgBuildProps, BurgBuildState> {
     return sum > 0;
   }
 
-  // addIngredientHandler = (type: string) => {
-  //   const oldCount = this.state.ingredients[type];
-  //   const updatedCount = oldCount + 1;
-  //   const updatedIngredients = {
-  //     ...this.state.ingredients,
-  //   };
-  //   updatedIngredients[type] = updatedCount;
-  //   const priceAddition = INGREDIENT_PRICES[type];
-  //   const oldPrice = this.state.totalPrice;
-  //   const newPrice = oldPrice + priceAddition;
-  //   this.setState({ totalPrice: newPrice, ingredients: updatedIngredients });
-  //   this.updatePurchaseState(updatedIngredients);
-  // };
-
-  // removeIngredientHandler = (type: string) => {
-  //   const oldCount = this.state.ingredients[type];
-  //   if (oldCount <= 0) {
-  //     return;
-  //   }
-  //   const updatedCount = oldCount - 1;
-  //   const updatedIngredients = {
-  //     ...this.state.ingredients,
-  //   };
-  //   updatedIngredients[type] = updatedCount;
-  //   const priceDeduction = INGREDIENT_PRICES[type];
-  //   const oldPrice = this.state.totalPrice;
-  //   const newPrice = oldPrice - priceDeduction;
-  //   this.setState({ totalPrice: newPrice, ingredients: updatedIngredients });
-  //   this.updatePurchaseState(updatedIngredients);
-  // };
-
   purchaseHandler = (): void => {
-    this.setState({ purchasing: true });
+    if (this.props.isAuthenticated) {
+      this.setState({ purchasing: true });
+    } else {
+      this.props.onSetRedirectPath("/checkout");
+      this.props.history.push("/auth");
+    }
   };
 
   purchaseCancelHandler = (): void => {
@@ -127,6 +104,7 @@ class BurgerBuilder extends Component<BurgBuildProps, BurgBuildState> {
             ingredientAdded={this.props.onIngredientAdded}
             ingredientRemoved={this.props.onIngredientRemoved}
             disabled={disabledInfo}
+            isAuth={this.props.isAuthenticated}
             purchasable={this.updatePurchaseState(this.props.ings)}
             ordered={this.purchaseHandler}
             price={this.props.price}
@@ -161,6 +139,7 @@ const mapStateToProps = (state: RootState) => {
     ings: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
     error: state.burgerBuilder.error,
+    isAuthenticated: state.auth.token !== "",
   };
 };
 
@@ -173,6 +152,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     onInitIngredients: () => dispatch<any>(initIngredients()),
     onInitPurchase: () =>
       dispatch<actionTypes.PurchaseInitAction>(purchaseInit()),
+    onSetRedirectPath: (path: string) =>
+      dispatch<actionTypes.SetAuthRedirectPathAction>(
+        setAuthRedirectPath(path)
+      ),
   };
 };
 

@@ -11,6 +11,7 @@ export interface BuildCtrlsProps extends Controls {
   ingredientRemoved: Function;
   disabled: { [key: string]: boolean | number };
   purchasable: boolean;
+  isAuth: boolean;
   price: number;
   ordered: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
@@ -41,7 +42,7 @@ const BuildControls = (props: BuildCtrlsProps) => (
       disabled={!props.purchasable}
       onClick={props.ordered}
     >
-      ORDER NOW
+      {props.isAuth ? "ORDER NOW" : "SIGN UP TO ORDER"}
     </button>
   </div>
 );

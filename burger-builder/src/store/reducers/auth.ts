@@ -4,6 +4,8 @@ import {
   AuthStartAction,
   AuthSuccessAction,
   AuthFailAction,
+  LogoutAction,
+  SetAuthRedirectPathAction,
 } from "../actions/actionTypes";
 import { updateObject } from "../utility";
 
@@ -11,7 +13,8 @@ export interface AuthReducerState {
   token?: string;
   userId: string;
   error?: string;
-  loading?: boolean;
+  loading: boolean;
+  authRedirectPath: string;
 }
 
 const initialState = {
@@ -19,6 +22,7 @@ const initialState = {
   userId: "",
   error: "",
   loading: false,
+  authRedirectPath: "/",
 };
 
 const authStart = (state: AuthReducerState, action: AuthStartAction) => {
@@ -41,6 +45,22 @@ const authFail = (state: AuthReducerState, action: AuthFailAction) => {
   });
 };
 
+const authLogout = (state: AuthReducerState, action: LogoutAction) => {
+  return updateObject(state, {
+    token: "",
+    userId: "",
+  });
+};
+
+const setAuthRedirectPath = (
+  state: AuthReducerState,
+  action: SetAuthRedirectPathAction
+) => {
+  return updateObject(state, {
+    authRedirectPath: action.path,
+  });
+};
+
 const reducer = (
   state: AuthReducerState = initialState,
   action: UnionActions
@@ -52,6 +72,10 @@ const reducer = (
       return authSuccess(state, action);
     case EnumActionTypes.AUTH_FAIL:
       return authFail(state, action);
+    case EnumActionTypes.AUTH_LOGOUT:
+      return authLogout(state, action);
+    case EnumActionTypes.SET_AUTH_REDIRECT:
+      return setAuthRedirectPath(state, action);
     default:
       return state;
   }

@@ -20,6 +20,8 @@ export enum EnumActionTypes {
   AUTH_START = "AUTH_START",
   AUTH_SUCCESS = "AUTH_SUCCESS",
   AUTH_FAIL = "AUTH_FAIL",
+  AUTH_LOGOUT = "AUTH_LOGOUT",
+  SET_AUTH_REDIRECT = "SET_AUTH_REDIRECT",
 }
 
 // --------------------INGREDIENTS---------------------------
@@ -105,6 +107,15 @@ export interface AuthFailAction {
   error: string;
 }
 
+export interface LogoutAction {
+  type: EnumActionTypes.AUTH_LOGOUT;
+}
+
+export interface SetAuthRedirectPathAction {
+  type: EnumActionTypes.SET_AUTH_REDIRECT;
+  path: string;
+}
+
 export type UnionActions =
   | AddIngredientAction
   | RemoveIngredientAction
@@ -119,4 +130,6 @@ export type UnionActions =
   | FetchOrdersStartAction
   | AuthStartAction
   | AuthSuccessAction
-  | AuthFailAction;
+  | AuthFailAction
+  | LogoutAction
+  | SetAuthRedirectPathAction;

@@ -8,6 +8,7 @@ interface ToolbarProps {
   drawerToggleClicked: (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => void;
+  isAuth: boolean;
 }
 
 const Toolbar = (props: ToolbarProps) => (
@@ -17,7 +18,7 @@ const Toolbar = (props: ToolbarProps) => (
       <Logo />
     </div>
     <nav className={classes.DesktopOnly}>
-      <NavigationItems />
+      <NavigationItems isAuthenticated={props.isAuth} />
     </nav>
   </header>
 );

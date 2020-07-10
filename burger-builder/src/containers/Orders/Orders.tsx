@@ -20,11 +20,13 @@ interface OrdersProps {
   onFetchOrders: Function;
   orders: OrderArray[];
   loading: boolean;
+  token: string;
+  userId: string;
 }
 
 class Orders extends Component<OrdersProps> {
   componentDidMount() {
-    this.props.onFetchOrders();
+    this.props.onFetchOrders(this.props.token, this.props.userId);
   }
   render() {
     let orders = [<Spinner />];
@@ -47,12 +49,15 @@ const mapStateToProps = (state: RootState) => {
   return {
     orders: state.order.orders,
     loading: state.order.loading,
+    token: state.auth.token,
+    userId: state.auth.userId,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onFetchOrders: () => dispatch<any>(fetchOrders()),
+    onFetchOrders: (token: string, userId: string) =>
+      dispatch<any>(fetchOrders(token, userId)),
   };
 };
 

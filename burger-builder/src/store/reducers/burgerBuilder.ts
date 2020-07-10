@@ -13,17 +13,14 @@ export interface BBReducerState {
   ingredients: Ingredient;
   totalPrice: number;
   error: boolean;
+  building: boolean;
 }
 
 const initialState = {
-  ingredients: {
-    // salad: 0,
-    // cheese: 0,
-    // meat: 0,
-    // bacon: 0,
-  } as Ingredient,
+  ingredients: {} as Ingredient,
   totalPrice: 4,
   error: false,
+  building: false,
 };
 
 const INGREDIENT_PRICES: Ingredient = {
@@ -41,6 +38,7 @@ const addIngredient = (state: BBReducerState, action: AddIngredientAction) => {
   const updatedState = {
     ingredients: updatedIngredients,
     totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+    building: true,
   };
   return updateObject(state, updatedState);
 };
@@ -56,6 +54,7 @@ const removeIngredient = (
   const updatedSt = {
     ingredients: updatedIngs,
     totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+    building: true,
   };
   return updateObject(state, updatedSt);
 };
@@ -68,6 +67,7 @@ const setIngredients = (
     ingredients: action.ingredients,
     totalPrice: 4,
     error: false,
+    building: false,
   });
 };
 

@@ -18,6 +18,8 @@ interface CDProps extends RouteComponentProps {
   price: number;
   onOrderBurger: Function;
   loading: boolean;
+  token: string;
+  userId: string;
 }
 export interface InputConfig {
   type: string;
@@ -33,6 +35,7 @@ export interface OrderDataProps {
   ingredients: Ingredient;
   price: number;
   orderData: { [element: string]: string };
+  userId: string;
 }
 
 export interface FormItemProps {
@@ -179,9 +182,10 @@ class ContactData extends Component<CDProps, CDState> {
       ingredients: this.props.ings,
       price: this.props.price,
       orderData: formData,
+      userId: this.props.userId,
     };
 
-    this.props.onOrderBurger(order);
+    this.props.onOrderBurger(order, this.props.token);
   };
 
   checkValidity(value: string, rules: Validation | undefined) {
@@ -285,13 +289,15 @@ const mapStateToProps = (state: RootState) => {
     ings: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
+    token: state.auth.token,
+    userId: state.auth.userId,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onOrderBurger: (orderData: OrderDataProps) =>
-      dispatch<any>(purchaseBurger(orderData)),
+    onOrderBurger: (orderData: OrderDataProps, token: string) =>
+      dispatch<any>(purchaseBurger(orderData, token)),
   };
 };
 
