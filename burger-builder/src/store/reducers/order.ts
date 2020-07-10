@@ -84,7 +84,7 @@ const fetchOrderStart = (
   action: FetchOrdersStartAction
 ) => {
   return updateObject(state, {
-    loading: false,
+    loading: true,
   });
 };
 
