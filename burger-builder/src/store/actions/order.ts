@@ -12,6 +12,8 @@ import {
 import axios from "../../axios-orders";
 import { OrderDataProps } from "../../containers/Checkout/ContactData/ContactData";
 import { OrderArray } from "../../containers/Orders/Orders";
+import { ThunkAction } from "redux-thunk";
+import { RootState } from "../..";
 
 export const purchaseBurgerSuccess = (
   id: string,
@@ -37,7 +39,17 @@ export const purchaseBurgerStart = (): PurchaseBurgerStartAction => {
   };
 };
 
-export const purchaseBurger = (orderData: OrderDataProps, token: string) => {
+export const purchaseBurger = (
+  orderData: OrderDataProps,
+  token: string
+): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  | PurchaseBurgerStartAction
+  | PurchaseBurgerSuccessAction
+  | PurchaseBurgerFailAction
+> => {
   return (dispatch: Dispatch) => {
     dispatch<PurchaseBurgerStartAction>(purchaseBurgerStart());
     axios
@@ -81,7 +93,15 @@ export const fetchOrdersStart = (): FetchOrdersStartAction => {
   };
 };
 
-export const fetchOrders = (token: string, userId: string) => {
+export const fetchOrders = (
+  token: string,
+  userId: string
+): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  FetchOrdersSuccessAction | FetchOrdersFailAction
+> => {
   return (dispatch: Dispatch) => {
     dispatch<FetchOrdersStartAction>(fetchOrdersStart());
     const queryParams =

@@ -1,5 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { Dispatch } from "redux";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
+
 import {
   EnumActionTypes,
   AuthStartAction,
@@ -10,6 +12,8 @@ import {
   DataProps,
 } from "./actionTypes";
 import {} from "../reducers/auth";
+
+import { RootState } from "../..";
 
 interface ResponseProps {
   displayName: string;
@@ -55,8 +59,10 @@ export const logout = (): LogoutAction => {
   };
 };
 
-export const checkAuthTimeout = (expirationTime: number) => {
-  return (dispatch: Dispatch) => {
+export const checkAuthTimeout = (
+  expirationTime: number
+): ThunkAction<void, RootState, unknown, LogoutAction> => {
+  return (dispatch: ThunkDispatch<RootState, unknown, LogoutAction>) => {
     setTimeout(() => {
       dispatch<LogoutAction>(logout());
     }, expirationTime * 1000);
@@ -72,8 +78,23 @@ export const setAuthRedirectPath = (
   };
 };
 
-export const auth = (email: string, password: string, isSignup: boolean) => {
-  return (dispatch: Dispatch) => {
+export const auth = (
+  email: string,
+  password: string,
+  isSignup: boolean
+): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  AuthStartAction | AuthSuccessAction | AuthFailAction
+> => {
+  return (
+    dispatch: ThunkDispatch<
+      RootState,
+      unknown,
+      AuthStartAction | AuthSuccessAction | AuthFailAction
+    >
+  ) => {
     dispatch<AuthStartAction>(authStart());
     const authData: DataProps = {
       email: email,
@@ -99,7 +120,7 @@ export const auth = (email: string, password: string, isSignup: boolean) => {
         dispatch<AuthSuccessAction>(
           authSuccess(response.data.idToken, response.data.localId)
         );
-        dispatch<any>(checkAuthTimeout(+response.data.expiresIn));
+        dispatch(checkAuthTimeout(+response.data.expiresIn));
       })
       .catch((err) => {
         console.log(err);
@@ -108,7 +129,12 @@ export const auth = (email: string, password: string, isSignup: boolean) => {
   };
 };
 
-export const authCheckState = () => {
+export const authCheckState = (): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  LogoutAction | AuthSuccessAction
+> => {
   return (dispatch: Dispatch) => {
     const token = localStorage.getItem("token");
     if (!token) {

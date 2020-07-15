@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 import axios from "../../../axios-orders";
 
 import Button from "../../../components/UI/Button/Button";
@@ -12,6 +12,11 @@ import Input from "../../../components/UI/Input/Input";
 import { RootState } from "../../../index";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import { purchaseBurger } from "../../../store/actions/index";
+import {
+  PurchaseBurgerStartAction,
+  PurchaseBurgerSuccessAction,
+  PurchaseBurgerFailAction,
+} from "../../../store/actions/actionTypes";
 
 interface CDProps extends RouteComponentProps {
   ings: Ingredient;
@@ -294,10 +299,18 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<
+    RootState,
+    unknown,
+    | PurchaseBurgerStartAction
+    | PurchaseBurgerSuccessAction
+    | PurchaseBurgerFailAction
+  >
+) => {
   return {
     onOrderBurger: (orderData: OrderDataProps, token: string) =>
-      dispatch<any>(purchaseBurger(orderData, token)),
+      dispatch(purchaseBurger(orderData, token)),
   };
 };
 

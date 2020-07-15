@@ -1,5 +1,6 @@
 import { Dispatch } from "redux";
 import axios from "../../axios-orders";
+import { ThunkAction } from "redux-thunk";
 
 // import * as actionTypes from "./actionTypes";
 import {
@@ -9,6 +10,7 @@ import {
   SetIngredientsAction,
   FetchIngredientsFailedAction,
 } from "./actionTypes";
+import { RootState } from "../..";
 import { Ingredient } from "../../containers/BurgerBuilder/BurgerBuilder";
 
 export const addIngredient = (name: string): AddIngredientAction => {
@@ -40,7 +42,12 @@ const fetchIngredientsFailed = (error: Error): FetchIngredientsFailedAction => {
   };
 };
 
-export const initIngredients = () => {
+export const initIngredients = (): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  SetIngredientsAction | FetchIngredientsFailedAction
+> => {
   return (dispatch: Dispatch) => {
     axios
       .get<Ingredient>(

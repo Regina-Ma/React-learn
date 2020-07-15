@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Burger from "../../components/Burger/Burger";
@@ -143,13 +143,22 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<
+    RootState,
+    unknown,
+    | actionTypes.AddIngredientAction
+    | actionTypes.RemoveIngredientAction
+    | actionTypes.PurchaseInitAction
+    | actionTypes.SetAuthRedirectPathAction
+  >
+) => {
   return {
     onIngredientAdded: (ingName: string) =>
       dispatch<actionTypes.AddIngredientAction>(addIngredient(ingName)),
     onIngredientRemoved: (ingName: string) =>
       dispatch<actionTypes.RemoveIngredientAction>(removeIngredient(ingName)),
-    onInitIngredients: () => dispatch<any>(initIngredients()),
+    onInitIngredients: () => dispatch(initIngredients()),
     onInitPurchase: () =>
       dispatch<actionTypes.PurchaseInitAction>(purchaseInit()),
     onSetRedirectPath: (path: string) =>

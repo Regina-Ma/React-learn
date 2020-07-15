@@ -7,7 +7,7 @@ import {
   Redirect,
   RouteComponentProps,
 } from "react-router-dom";
-import { Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 
 import Layout from "./hoc/Layout/Layout";
 import BurgerBuilder from "./containers/BurgerBuilder/BurgerBuilder";
@@ -16,6 +16,7 @@ import Orders from "./containers/Orders/Orders";
 import Auth from "./containers/Auth/Auth";
 import Logout from "./containers/Auth/Logout/Logout";
 import { authCheckState } from "./store/actions/index";
+import { LogoutAction, AuthSuccessAction } from "./store/actions/actionTypes";
 import { RootState } from "./index";
 
 interface AppProps extends RouteComponentProps {
@@ -61,9 +62,15 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<
+    RootState,
+    unknown,
+    LogoutAction | AuthSuccessAction | LogoutAction
+  >
+) => {
   return {
-    onTryAutoSignup: () => dispatch<any>(authCheckState()),
+    onTryAutoSignup: () => dispatch(authCheckState()),
   };
 };
 

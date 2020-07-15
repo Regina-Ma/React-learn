@@ -31,10 +31,7 @@ export interface RootState {
 
 const store = createStore(
   rootReducer,
-  composeWithDevTools(
-    applyMiddleware(thunk)
-    // other store enhancers if any
-  )
+  composeWithDevTools(applyMiddleware(thunk))
 );
 
 const app = (

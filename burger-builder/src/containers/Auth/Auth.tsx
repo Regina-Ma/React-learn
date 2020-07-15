@@ -1,7 +1,7 @@
 import React, { Component, ChangeEvent } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
@@ -11,7 +11,12 @@ import {
 } from "../../containers/Checkout/ContactData/ContactData";
 import classes from "./Auth.module.css";
 import { auth, setAuthRedirectPath } from "../../store/actions/index";
-import { SetAuthRedirectPathAction } from "../../store/actions/actionTypes";
+import {
+  SetAuthRedirectPathAction,
+  AuthStartAction,
+  AuthSuccessAction,
+  AuthFailAction,
+} from "../../store/actions/actionTypes";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import { RootState } from "../../index";
 
@@ -200,10 +205,19 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<
+    RootState,
+    unknown,
+    | AuthStartAction
+    | AuthSuccessAction
+    | AuthFailAction
+    | SetAuthRedirectPathAction
+  >
+) => {
   return {
     onAuth: (email: string, password: string, isSignup: boolean) =>
-      dispatch<any>(auth(email, password, isSignup)),
+      dispatch(auth(email, password, isSignup)),
     onSetRedirectPath: () =>
       dispatch<SetAuthRedirectPathAction>(setAuthRedirectPath("/")),
   };

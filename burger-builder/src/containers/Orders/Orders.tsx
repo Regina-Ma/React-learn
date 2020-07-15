@@ -1,11 +1,15 @@
 import React, { Component } from "react";
 import axios from "../../axios-orders";
-import { Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 
 import Order from "../../components/Order/Order";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import { Ingredient } from "../BurgerBuilder/BurgerBuilder";
 import { fetchOrders } from "../../store/actions/index";
+import {
+  FetchOrdersSuccessAction,
+  FetchOrdersFailAction,
+} from "../../store/actions/actionTypes";
 import { connect } from "react-redux";
 import { RootState } from "../..";
 import Spinner from "../../components/UI/Spinner/Spinner";
@@ -54,10 +58,16 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<
+    RootState,
+    unknown,
+    FetchOrdersSuccessAction | FetchOrdersFailAction
+  >
+) => {
   return {
     onFetchOrders: (token: string, userId: string) =>
-      dispatch<any>(fetchOrders(token, userId)),
+      dispatch(fetchOrders(token, userId)),
   };
 };
 
