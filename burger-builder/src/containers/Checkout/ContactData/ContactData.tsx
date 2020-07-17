@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import axios from "../../../axios-orders";
 
 import Button from "../../../components/UI/Button/Button";
@@ -21,7 +21,17 @@ import {
 interface CDProps extends RouteComponentProps {
   ings: Ingredient;
   price: number;
-  onOrderBurger: Function;
+  onOrderBurger: (
+    orderData: OrderDataProps,
+    token: string
+  ) => ThunkAction<
+    void,
+    RootState,
+    unknown,
+    | PurchaseBurgerStartAction
+    | PurchaseBurgerSuccessAction
+    | PurchaseBurgerFailAction
+  >;
   loading: boolean;
   token: string;
   userId: string;

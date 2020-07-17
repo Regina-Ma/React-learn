@@ -12,7 +12,7 @@ interface CheckoutProps extends RouteComponentProps {
   checkoutContinued: History;
   ings: Ingredient;
   purchased: boolean;
-  onInitPurchase: Function;
+  onInitPurchase: () => void;
 }
 
 class Checkout extends Component<CheckoutProps> {

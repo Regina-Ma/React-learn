@@ -21,7 +21,7 @@ export interface OrderArray {
 }
 
 interface OrdersProps {
-  onFetchOrders: Function;
+  onFetchOrders: (token: string, userId: string) => void;
   orders: OrderArray[];
   loading: boolean;
   token: string;

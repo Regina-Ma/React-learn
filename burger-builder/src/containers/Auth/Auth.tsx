@@ -32,8 +32,8 @@ interface AuthState {
 }
 
 interface AuthProps {
-  onAuth: Function;
-  onSetRedirectPath: Function;
+  onAuth: (email: string, password: string, isSignup: boolean) => void;
+  onSetRedirectPath: () => void;
   loading: boolean;
   error?: string;
   isAuthenticated: boolean;

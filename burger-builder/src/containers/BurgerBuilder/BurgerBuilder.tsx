@@ -26,11 +26,11 @@ interface BurgBuildProps extends RouteComponentProps {
   price: number;
   error: boolean;
   isAuthenticated: boolean;
-  onIngredientAdded: Function;
-  onIngredientRemoved: Function;
-  onInitIngredients: Function;
-  onInitPurchase: Function;
-  onSetRedirectPath: Function;
+  onIngredientAdded: () => void;
+  onIngredientRemoved: () => void;
+  onInitIngredients: () => void;
+  onInitPurchase: () => void;
+  onSetRedirectPath: (path: string) => void;
 }
 
 export interface Ingredient {

@@ -20,7 +20,7 @@ import { LogoutAction, AuthSuccessAction } from "./store/actions/actionTypes";
 import { RootState } from "./index";
 
 interface AppProps extends RouteComponentProps {
-  onTryAutoSignup: Function;
+  onTryAutoSignup: () => void;
   isAuthenticated: boolean;
 }
 class App extends Component<AppProps> {

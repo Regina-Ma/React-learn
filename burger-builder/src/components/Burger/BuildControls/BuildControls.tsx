@@ -7,8 +7,8 @@ export interface Controls {
 }
 export interface BuildCtrlsProps extends Controls {
   controls?: Array<Controls>;
-  ingredientAdded: Function;
-  ingredientRemoved: Function;
+  ingredientAdded: ([key]: string) => void;
+  ingredientRemoved: ([key]: string) => void;
   disabled: { [key: string]: boolean | number };
   purchasable: boolean;
   isAuth: boolean;

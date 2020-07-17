@@ -7,7 +7,7 @@ import { LogoutAction } from "../../../store/actions/actionTypes";
 import { connect } from "react-redux";
 
 interface LogoutProps {
-  onLogout: Function;
+  onLogout: () => void;
 }
 
 class Logout extends Component<LogoutProps> {
